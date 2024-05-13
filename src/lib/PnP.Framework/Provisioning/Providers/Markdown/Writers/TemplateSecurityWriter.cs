@@ -74,8 +74,6 @@ namespace PnP.Framework.Provisioning.Providers.Markdown.Writers
                     }
                 }
 
-
-
                 if (template.Security != null && template.Security.AdditionalAdministrators != null && template.Security.AdditionalAdministrators.Count > 0)
                 {
                     WriteHeader("Administrators", 2, detailsWriter);

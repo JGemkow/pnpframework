@@ -30,6 +30,17 @@ namespace PnP.Framework.Provisioning.Providers.Markdown.Writers
                 {
                     WriteHeader("Global Navigation", 2, writer);
                     WriteTextField(template.Navigation.GlobalNavigation.NavigationType.ToString(), "Navigation Type", writer);
+
+                    if (template.Navigation.GlobalNavigation.StructuralNavigation != null && template.Navigation.GlobalNavigation.StructuralNavigation.NavigationNodes != null && template.Navigation.GlobalNavigation.StructuralNavigation.NavigationNodes.Count > 0)
+                    {
+                        WriteHeader("Structural Navigation Items", 3, writer);
+                        writer.WriteLine("| Title | Url |");
+                        writer.WriteLine("| :------------- | :----------: |");
+                        foreach (var node in template.Navigation.GlobalNavigation.StructuralNavigation.NavigationNodes)
+                        {
+                            writer.WriteLine($"| {node.Title} | {node.Url} |");
+                        }
+                    }
                 }
             }
         }
