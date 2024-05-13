@@ -49,6 +49,33 @@ namespace PnP.Framework.Provisioning.Providers.Markdown.Writers
                         WriteText(associatedGroupText, detailsWriter);
                     }
                 }
+
+                if (template.Security != null && template.Security.SiteGroups != null && template.Security.SiteGroups.Count > 0)
+                {
+                    using (var siteGroupsWriter = new StringWriter())
+                    {
+                        foreach (SiteGroup siteGroup in template.Security.SiteGroups)
+                        {
+                            siteGroupsWriter.WriteLine($"| {siteGroup.Title} | {siteGroup.Description} |");
+                        }
+                        var siteGroupsText = siteGroupsWriter.ToString();
+                        if (!string.IsNullOrEmpty(siteGroupsText))
+                        {
+
+                            WriteHeader("Site Groups", 2, detailsWriter);
+                            if (siteGroupsText.Contains("{groupsitetitle}"))
+                            {
+                                detailsWriter.WriteLine("*{groupsitetitle} will be replaced at provisioning time with the actual site title*");
+                            }
+                            detailsWriter.WriteLine("| Group Name | Description |");
+                            detailsWriter.WriteLine("| --- | --- |");
+                            WriteText(siteGroupsText, detailsWriter);
+                        }
+                    }
+                }
+
+
+
                 if (template.Security != null && template.Security.AdditionalAdministrators != null && template.Security.AdditionalAdministrators.Count > 0)
                 {
                     WriteHeader("Administrators", 2, detailsWriter);
