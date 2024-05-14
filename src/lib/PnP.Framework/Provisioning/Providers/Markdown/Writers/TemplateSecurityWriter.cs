@@ -103,10 +103,33 @@ namespace PnP.Framework.Provisioning.Providers.Markdown.Writers
 
                 if (template.Security != null && template.Security.AdditionalVisitors != null && template.Security.AdditionalVisitors.Count > 0)
                 {
-                    WriteHeader("Members", 2, detailsWriter);
+                    WriteHeader("Visitors", 2, detailsWriter);
                     foreach (var admin in template.Security.AdditionalOwners)
                     {
                         WriteText(admin.Name, detailsWriter);
+                    }
+                }
+
+                if (template.Security != null && template.Security.SiteSecurityPermissions != null && template.Security.SiteSecurityPermissions.RoleDefinitions != null && template.Security.SiteSecurityPermissions.RoleDefinitions.Count > 0)
+                {
+                    WriteHeader("Permission Levels", 2, detailsWriter);
+                    foreach (var role in template.Security.SiteSecurityPermissions.RoleDefinitions)
+                    {
+                        detailsWriter.WriteLine($"- **{role.Name}**: {role.Description}");
+                        foreach (var permission in role.Permissions)
+                        {
+                            detailsWriter.WriteLine($"  - {permission}");
+                        }
+
+                    }
+                }
+
+                if (template.Security != null && template.Security.SiteSecurityPermissions != null && template.Security.SiteSecurityPermissions.RoleAssignments != null && template.Security.SiteSecurityPermissions.RoleAssignments.Count > 0)
+                {
+                    WriteHeader("Site permissions assignment", 2, detailsWriter);
+                    foreach (var roleAssignment in template.Security.SiteSecurityPermissions.RoleAssignments)
+                    {
+                        detailsWriter.WriteLine($"- **{roleAssignment.Principal}** ({roleAssignment.RoleDefinition})");
                     }
                 }
 
