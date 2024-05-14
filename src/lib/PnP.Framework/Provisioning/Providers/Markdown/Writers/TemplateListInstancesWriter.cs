@@ -94,18 +94,22 @@ namespace PnP.Framework.Provisioning.Providers.Markdown.Writers
                                 //     WriteText($"- {GetAttributeValue("Name", fieldNode)}", viewDetailsWriter);
                                 // }
 
-                                WriteNewLine(viewDetailsWriter);
-                                WriteText("**Query:**", viewDetailsWriter);
-                                WriteText("```", viewDetailsWriter);
+                                
                                 if (xmlField.Descendants("Query").FirstOrDefault() != null)
                                 {
                                     using (var reader = xmlField.Descendants("Query").FirstOrDefault().CreateReader())
                                     {
                                         reader.MoveToContent();
-                                        WriteText(reader.ReadInnerXml(), viewDetailsWriter);
+                                        string queryXml = reader.ReadInnerXml();
+                                        if (!string.IsNullOrEmpty(queryXml))
+                                        {
+                                            WriteText("**Query:**", viewDetailsWriter);
+                                            WriteText("```", viewDetailsWriter);
+                                            WriteText(queryXml, viewDetailsWriter);
+                                            WriteText("```", viewDetailsWriter);
+                                        }
                                     }
                                 }
-                                WriteText("```", viewDetailsWriter);
                             }
 
                             detailsWriter.WriteLine(viewDetailsWriter.ToString());
