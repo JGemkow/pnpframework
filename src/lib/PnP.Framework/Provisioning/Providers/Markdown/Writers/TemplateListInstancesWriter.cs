@@ -93,7 +93,21 @@ namespace PnP.Framework.Provisioning.Providers.Markdown.Writers
                                 // {
                                 //     WriteText($"- {GetAttributeValue("Name", fieldNode)}", viewDetailsWriter);
                                 // }
+
+                                WriteNewLine(viewDetailsWriter);
+                                WriteText("**Query:**", viewDetailsWriter);
+                                WriteText("```", viewDetailsWriter);
+                                if (xmlField.Descendants("Query").FirstOrDefault() != null)
+                                {
+                                    using (var reader = xmlField.Descendants("Query").FirstOrDefault().CreateReader())
+                                    {
+                                        reader.MoveToContent();
+                                        WriteText(reader.ReadInnerXml(), viewDetailsWriter);
+                                    }
+                                }
+                                WriteText("```", viewDetailsWriter);
                             }
+
                             detailsWriter.WriteLine(viewDetailsWriter.ToString());
                             WriteNewLine(viewDetailsWriter);
 
@@ -125,7 +139,7 @@ namespace PnP.Framework.Provisioning.Providers.Markdown.Writers
                                     var fieldDisplayName = xmlField.Attribute("DisplayName").Value;
                                     var fieldType = xmlField.Attribute("Type").Value;
 
-                                    // These may or may not be set on the XML node
+                                    // These may or may not be set on the XML nodec
                                     var fieldRequired = xmlField.Attribute("Required") != null ? xmlField.Attribute("Required").Value : "";
                                     var fieldHidden = xmlField.Attribute("Hidden") != null ? xmlField.Attribute("Hidden").Value: "";
                                     var fieldMaxLength = xmlField.Attribute("MaxLength") != null ? xmlField.Attribute("MaxLength").Value: "";
@@ -142,8 +156,18 @@ namespace PnP.Framework.Provisioning.Providers.Markdown.Writers
                                 detailsWriter.WriteLine("\n \\* For site column information, refer to Fields section at site-level.", detailsWriter);
                             }
                         }
-                        
+
+                        if (list.Security != null && list.Security.RoleAssignments != null && list.Security.RoleAssignments != null && list.Security.RoleAssignments.Count > 0)
+                        {
+                            WriteHeader("List/library Permissions", 3, detailsWriter);
+                            foreach (var roleAssignment in list.Security.RoleAssignments)
+                            {
+                                detailsWriter.WriteLine($"- **{roleAssignment.Principal}** ({roleAssignment.RoleDefinition})");
+                            }
+                        }
+
                     }
+
                     writer.WriteLine(detailsWriter.ToString());
                     WriteNewLine(writer);
                 }
